@@ -15,11 +15,6 @@ public class Event {
 		this.eventUser = eventUser;
 	}
 
-	public boolean equals(Object e) {
-		Event event = (Event) e;
-		return event.getTitle().equalsIgnoreCase(title)
-				|| event.eventUser.getName().equalsIgnoreCase(eventUser.getName());
-	}
 
 	public String getTitle() {
 		return title;

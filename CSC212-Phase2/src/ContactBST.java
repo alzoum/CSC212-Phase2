@@ -12,6 +12,9 @@ public class ContactBST<T> {
 	        return (current != null) ? current.getData() : null;
 	    }
 	 
+	 public BSTNode<Contact> getRoot(){
+		 return root;
+	 }
 	 
 	    public void insert(Contact contact) {
 	        if (!contactExists(contact)) {
@@ -51,7 +54,7 @@ public class ContactBST<T> {
 	        if (current == null) {
 	            return null;
 	        }
-	        int cmp = name.compareTo(current.getData().getName());
+	        int cmp = name.compareToIgnoreCase(current.getData().getName());
 	        if (cmp < 0) {
 	            return findRec(current.getLeft(), name);
 	        } else if (cmp > 0) {
@@ -70,6 +73,94 @@ public class ContactBST<T> {
 	        }
 	        return phoneNumberExistsRec(current.getLeft(), phoneNumber) || phoneNumberExistsRec(current.getRight(), phoneNumber);
 	    }
+	    
+	    
+	    public boolean delete(String name) {
+	        boolean[] wasDeleted = new boolean[1]; // To track if the node was actually found and deleted
+	        root = deleteRec(root, name, wasDeleted);
+	        return wasDeleted[0];
+	    }
+
+	    private BSTNode<Contact> deleteRec(BSTNode<Contact> current, String name, boolean[] wasDeleted) {
+	        if (current == null) {
+	            return null; // Base case: Node not found
+	        }
+
+	        int cmp = name.compareToIgnoreCase(current.getData().getName());
+	        if (cmp < 0) {
+	            current.setLeft(deleteRec(current.getLeft(), name, wasDeleted));
+	        } else if (cmp > 0) {
+	            current.setRight(deleteRec(current.getRight(), name, wasDeleted));
+	        } else {
+	            wasDeleted[0] = true; // Node found and will be deleted
+
+	            // Node with only one child or no child
+	            if (current.getLeft() == null) {
+	                return current.getRight();
+	            } else if (current.getRight() == null) {
+	                return current.getLeft();
+	            }
+
+	            // Node with two children
+	            // Get the inorder successor (smallest in the right subtree)
+	            Contact successorData = findMin(current.getRight());
+	            current.setData(successorData);
+	            current.setRight(deleteRec(current.getRight(), successorData.getName(), new boolean[1]));
+	        }
+	        return current;
+	    }
+
+	    private Contact findMin(BSTNode<Contact> current) {
+	        while (current.getLeft() != null) {
+	            current = current.getLeft();
+	        }
+	        return current.getData();
+	    }
+	    
+	    
+	    
+	    public ContactBST<T> searchCriteria(String searchCriteria ,String searchValue) {//value = name, phonenumber, email, address or birthday
+	        ContactBST<T> resultTree =  new ContactBST<>();
+	        searchCriteriaRec(root, searchCriteria ,searchValue, resultTree);
+	        return resultTree;
+	    }
+	    
+	    private void searchCriteriaRec(BSTNode<Contact> current, String searchCriteria, String searchValue, ContactBST<T> resultTree) {
+	        if (current == null) {
+	            return;
+	        }
+	        // First, traverse the left subtree
+	        searchCriteriaRec(current.getLeft(), searchCriteria, searchValue, resultTree);
+	        
+	        if (searchCriteria.equalsIgnoreCase("name") && current.getData().getName().equalsIgnoreCase(searchValue)) {
+	        	 resultTree.insert(current.getData());
+			}
+			if (searchCriteria.equalsIgnoreCase("phone") && current.getData().getPhoneNumber().equals(searchValue)) {
+				 resultTree.insert(current.getData());
+			}
+			if (searchCriteria.equalsIgnoreCase("email") && current.getData().getEmailAddress().equalsIgnoreCase(searchValue)) {
+				 resultTree.insert(current.getData());
+			}
+			if (searchCriteria.equalsIgnoreCase("address") && current.getData().getAddress().equalsIgnoreCase(searchValue)) {
+				 resultTree.insert(current.getData());
+			}
+			if (searchCriteria.equalsIgnoreCase("birthday") && current.getData().getBirthday().equals(searchValue)) {
+				 resultTree.insert(current.getData());
+			}
+			
+	        
+	        searchCriteriaRec(current.getRight(), searchCriteria, searchValue, resultTree);
+	    }
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 	    
 	    
 }
