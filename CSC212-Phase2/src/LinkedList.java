@@ -34,28 +34,49 @@ public class LinkedList<T> {
 
 		}
 	
-	public boolean remove(T e) {
-		if (isEmpty()) {
-			return false;
-		} else {
+	public boolean remove(Contact contact) {
+	    if (isEmpty()) {
+	        return false;
+	    } else {
+	        Node<Event> current = head;
+	        Node<Event> prev = null;
+	        boolean eventDeleted = false;
 
-				Node<Event> current = head;
-				boolean eventDeleted = false; // Flag to track if any events were deleted
-				while (current.getNext() != null) {
-					if (((Event) current.getNext().getData()).getEventUser().equals(((Event) e).getEventUser())) {
-						current.setNext(current.getNext().getNext());
-						eventDeleted = true; // Set the flag to true if an event was deleted
-					} else {
-						current = current.getNext();
-					}
-				}
-				if (head.getData().equals(e))// to delete the last node exist
-					head = head.getNext();
-				return eventDeleted; // Return the flag indicating if any events were deleted
-			
-		}
+	        while (current != null) {
+	            Event event = current.getData();
 
-		
+	            if (event.getParticipants().contains(contact)) {
+	                if (event.getAppointment()) {
+	                    // Remove the whole event if it's an appointment and the contact is a participant
+	                    if (prev == null) {
+	                        head = current.getNext(); // Removing head
+	                    } else {
+	                        prev.setNext(current.getNext()); // Removing in-between node
+	                    }
+	                    eventDeleted = true;
+	                } else {
+	                    // Just remove the contact from the event
+	                    event.removeParticipant(contact);
+	                    if (event.getParticipants().isEmpty()) {
+	                        // Remove event if no participants left
+	                        if (prev == null) {
+	                            head = current.getNext(); // Removing head
+	                        } else {
+	                            prev.setNext(current.getNext()); // Removing in-between node
+	                        }
+	                        eventDeleted = true;
+	                    }
+	                }
+	            }
+
+	            // Update prev and current pointers only if the current event was not deleted
+	            if (!eventDeleted) {
+	                prev = current;
+	            }
+	            current = current.getNext();
+	        }
+	        return eventDeleted;
+	    }
 	}
 
 	
@@ -76,16 +97,13 @@ public class LinkedList<T> {
 		return null;
 	}
 
-	public void printEventDetails(String value) {
+	public void printEventDetails(String title) {
 		Node<Event> current = head;
 		int counter = 0;
 		while (current != null) {
-			boolean title = ((Event) current.getData()).getTitle().equalsIgnoreCase(value);
-			boolean name = ((Event) current.getData()).getEventUser().getName().equalsIgnoreCase(value);
-			if (title || name) {
-				System.out.println("\n Event found!");
-				System.out.println(((Event) current.getData()).toString());
-				counter++;
+			if(current.getData().getTitle().equalsIgnoreCase(title) && !(current.getData().getAppointment())) {
+				System.out.println(current.getData().toString()); ;
+				 counter++;
 			}
 
 			current = current.getNext();
@@ -93,42 +111,27 @@ public class LinkedList<T> {
 		if (counter == 0) {
 			System.out.println("\nNo events found!\n");
 		}
+
 	}
-
-	public void scheduleEvent(String title, String date, String time, String location, Contact eventUser) { //need fixing
-
-		if (eventUser != null) {
-			boolean hasConflict = false;
-			Event newEvent = new Event(title, date, time, location, eventUser);
-
-			Node current = head;
-			while (current != null) {
-				if (current.getData() instanceof Event) {
-					Event existingEvent = (Event) current.getData();
-					if (existingEvent.getEventUser().equals(eventUser)// Check for scheduling conflicts by comparing
-																		// event details
-							&& existingEvent.getDate().equals(newEvent.getDate())
-							&& existingEvent.getTime().equals(newEvent.getTime())) {
-
-						hasConflict = true;
-						break;
-					}
-				}
-				current = current.getNext();
-
+	
+	public void printEventDetails(Contact contact) {
+		Node<Event> current = head;
+		int counter = 0;
+		while (current != null) {
+			if(current.getData().getParticipants().contains(contact)) {
+				System.out.println(current.getData().toString()); ;
+				 counter++;
 			}
 
-			if (!hasConflict) {
-				insert((T) newEvent);
-				System.out.println("\nEvent scheduled successfully!\n");
-			} else {
-				System.out.println("\nEvent scheduling conflict. Cannot schedule the event.\n");
-			}
-
-		} else {
-			System.out.println("\nContact does not exist in the phonebook.\n");
+			current = current.getNext();
 		}
+		if (counter == 0) {
+			System.out.println("\nNo events found!\n");
+		}
+
 	}
+
+	
 
 	public void printAllEvents() {
 		Node<Event> current = head;
@@ -139,6 +142,7 @@ public class LinkedList<T> {
 		}
 
 		while (current != null) {
+			if(!(current.getData().getAppointment()))
 			System.out.println(current.getData().toString());
 			current = current.getNext();
 		}
