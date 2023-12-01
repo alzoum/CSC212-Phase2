@@ -16,6 +16,10 @@ public class ContactBST<T> {
 		 return root;
 	 }
 	 
+	 public boolean isEmpty() {
+		 return root == null;
+	 }
+	 
 	    public void insert(Contact contact) {
 	        if (!contactExists(contact)) {
 	            if (root == null) {
@@ -46,6 +50,8 @@ public class ContactBST<T> {
 	    }
 	   
 	    public T find(String name) {
+	    	if(root.getData().getName().equalsIgnoreCase(name))
+	    		return (T)root.getData();
 	        current = root;
 	        return (T)findRec(current, name);
 	    }
@@ -152,13 +158,25 @@ public class ContactBST<T> {
 	        searchCriteriaRec(current.getRight(), searchCriteria, searchValue, resultTree);
 	    }
 	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
+	    public String getParticipantNames() {
+	        StringBuilder namesBuilder = new StringBuilder();
+	        getParticipantNamesRec(root, namesBuilder);
+	        return namesBuilder.toString();
+	    }
+
+	    private void getParticipantNamesRec(BSTNode<Contact> node, StringBuilder namesBuilder) {
+	        if (node == null) {
+	            return;
+	        }
+	        getParticipantNamesRec(node.getLeft(), namesBuilder); // Traverse left subtree
+	        if (namesBuilder.length() > 0) {
+	            namesBuilder.append(", ");
+	        }
+	        namesBuilder.append(node.getData().getName());       // Process node
+	        getParticipantNamesRec(node.getRight(), namesBuilder); // Traverse right subtree
+	    }
+
+
 	    
 	    
 	    

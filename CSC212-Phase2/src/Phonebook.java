@@ -1,5 +1,8 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 public class Phonebook {
 	Scanner scanner = new Scanner(System.in);
 	private ContactBST<Contact> contactTree;
@@ -14,9 +17,6 @@ public class Phonebook {
 		contactTree.insert(contact);
 	}
 
-	public Contact findContact(String name) {
-		return contactTree.find(name);
-	}
 
 	public void deleteContact(String name) {
 
@@ -35,7 +35,6 @@ public class Phonebook {
 			System.out.println("Failed to remove contact.\n");
 		}
 	}
-
 
 	public void searchContacts() {
 		Scanner scanner = new Scanner(System.in);
@@ -104,9 +103,9 @@ public class Phonebook {
 	}
 
 	private void printContact(Contact contact) {
-		System.out.println("Name: " + contact.getName() + ", Phone: " + contact.getPhoneNumber() + ", Email: "
-				+ contact.getEmailAddress() + ", Address: " + contact.getAddress() + ", Birthday: "
-				+ contact.getBirthday());
+		System.out.println("-----------------------\nName: " + contact.getName() + "\n Phone: " + contact.getPhoneNumber() + "\n Email: "
+				+ contact.getEmailAddress() + "\n Address: " + contact.getAddress() + "\n Birthday: "
+				+ contact.getBirthday() + "\n-----------------------") ;
 	}
 
 	public void printContactsByFirstName(String firstName) {
@@ -132,12 +131,24 @@ public class Phonebook {
 
 	}
 
+	private static boolean isValidDate(String dateStr, String format) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+            LocalDate date1 = LocalDate.parse(dateStr, formatter);
+            LocalDate currentDate = LocalDate.now();
+
+            // Check if the parsed date is valid and in the future
+            return !date1.isBefore(currentDate);
+        } catch (DateTimeParseException e) {
+            return false;
+        }}
+	
 	public void scheduleEvent() {
-		String title, contactName, date, time, location;
+		String title, contactName, date, location;
 		System.out.println("Enter type:\n" + "1. event\n" + "2. appointment");
 		System.out.print("Enter your choice: ");
 		int choice = scanner.nextInt();
-			scanner.nextLine();
+		scanner.nextLine();
 		if (choice == 1) {
 			System.out.print("Enter event title: ");
 			title = scanner.nextLine();
@@ -145,20 +156,15 @@ public class Phonebook {
 			contactName = scanner.nextLine();
 			String[] names = contactName.split(",");
 			System.out.print("Enter event date and time (MM/DD/YYYY HH:MM): ");
-			String x = scanner.nextLine();
-			String[] dateParts = x.split(" ");
-			try {
-				date = dateParts[0];
-				time = dateParts[1];
-			} catch (ArrayIndexOutOfBoundsException e) {
-				System.out.println("\nWrong input!\n");
+			date = scanner.nextLine();
+			if(!(isValidDate(date, "MM/dd/yyyy HH:mm"))) {
+				System.out.println("the date is not correct");
 				return;
-
 			}
 			System.out.print("Enter event location: ");
 			location = scanner.nextLine();
 
-			Event event = new Event(false, title, date, time, location);
+			Event event = new Event(false, title, date, location);
 			for (int i = 0; i < names.length; i++) {
 				Contact c = contactTree.find(names[i]);
 				if (c == null) {
@@ -167,7 +173,11 @@ public class Phonebook {
 				}
 				event.addParticipant(c);
 			}
-			events.insert(event);
+			if(!(events.hasConflict(event)))
+				events.insert(event);
+			else {
+				System.out.println("\nThere is a conflict\n");
+			}
 		}
 
 		else if (choice == 2) {
@@ -176,87 +186,150 @@ public class Phonebook {
 			System.out.print("Enter contact name: ");
 			contactName = scanner.nextLine();
 			System.out.print("Enter event date and time (MM/DD/YYYY HH:MM): ");
-			String x = scanner.nextLine();
-			String[] dateParts = x.split(" ");
-			try {
-				date = dateParts[0];
-				time = dateParts[1];
-			} catch (ArrayIndexOutOfBoundsException e) {
-				System.out.println("\nWrong input!\n");
+			date = scanner.nextLine();
+			if(!(isValidDate(date, "MM/dd/yyyy HH:mm"))) {
+				System.out.println("the date is not correct");
 				return;
-
 			}
 			System.out.print("Enter event location: ");
 			location = scanner.nextLine();
-			
+
 			Contact c = contactTree.find(contactName);
-		
-			if(c!=null) {
-				Event event = new Event(true, title, date, time, location);
+
+			if (c != null) {
+				Event event = new Event(true, title, date, location);
 				event.addParticipant(c);
-				events.insert(event);
+				if(!(events.hasConflict(event)))
+					events.insert(event);
+				else {
+					System.out.println("\nThere is a conflict\n");
 				}
-			else {
+			} else {
 				System.out.println("no contact found with this name");
 				return;
 			}
-			
+
 		} else {
-			System.out.println("amr kl zg");
+			System.out.println("\nWrong input!\n");
 			return;
 		}
 	}
-	
+
 	public void printEventDetails() {
-		System.out.print("Enter search criteria:\n"
-				+ "1. contact name\n"
-				+ "2. Event tittle\n");
+		System.out.print("Enter search criteria:\n" + "1. contact name\n" + "2. Event tittle\n");
 		int x = scanner.nextInt();
 
-		if(x == 1) {
+		if (x == 1) {
 			System.out.print("Enter contact name: ");
 			scanner.nextLine();
 			String name = scanner.nextLine();
 			Contact c = contactTree.find(name);
-			if(c != null) {
-			events.printEventDetails(c);
+			if (c != null) {
+				events.printEventDetails(c);
+			} else {
+				System.out.println("No contact found with this name");
 			}
-			else {
-				System.out.println("amr kl zg");
-			}
-		}
-		else if(x == 2) {
+		} else if (x == 2) {
 			System.out.print("Enter Event title: ");
 			scanner.nextLine();
 			String title = scanner.nextLine();
 			events.printEventDetails(title);
-			
-		}
-		else {
-			System.out.println("amr n7bk");
+
+		} else {
+			System.out.println("No event found with this event title");
 		}
 	}
-	
+
 	public void printAllEvents() {
 		events.printAllEvents();
 	}
-	
-	
+
+
 	public static void main(String[] args) {
-		Phonebook myPhonebook = new Phonebook();
+		Phonebook phonebook = new Phonebook();
 
-		// Create and add contacts
-		Contact alice = new Contact("Alice A", "12345", "alice@example.com", "123 Street", "01-01-1990", "Note");
-		Contact bob = new Contact("Bob B", "54321", "bob@example.com", "321 Street", "02-02-1992", "Note");
-		myPhonebook.addContact(alice);
-		myPhonebook.addContact(bob);
+		Scanner scanner = new Scanner(System.in);
+		int input = 0;
+		String name, phonenumber, email, address, birthday, note;
+		System.out.println("Welcome to the Linked Tree Phonebook!");
+		do {
+			try {
+			System.out.println("Please choose an option:");
+			System.out.println("1.Add a contact");
+			System.out.println("2.Search for a contact");
+			System.out.println("3.Delete a contact");
+			System.out.println("4.Schedule an event/appointment");
+			System.out.println("5.Print event details");
+			System.out.println("6.Print contacts by first name");
+			System.out.println("7.Pring all events alphabetically");
+			System.out.println("8.Exit \n");
 
+			System.out.print("Enter your choice:");
+			
+			input = scanner.nextInt();
+			
+			
+			switch (input) {
+			case 1:
+				System.out.print("\nEnter the contact's name:");
+				scanner.nextLine(); // Consume newline character
+				name = scanner.nextLine();
+				System.out.print("Enter the contact's phone number:");
+				phonenumber = scanner.nextLine();
+				System.out.print("Enter the contact's email address:");
+				email = scanner.nextLine();
+				System.out.print("Enter the contact's address:");
+				address = scanner.nextLine();
+				System.out.print("Enter the contact's birthday:");
+				birthday = scanner.nextLine();
+				System.out.print("Enter any notes for the contact:");
+				note = scanner.nextLine();
+				Contact C = new Contact(name, phonenumber, email, address, birthday, note);
+				System.out.println();
+				phonebook.addContact(C);
+				System.out.println();
+				break;
+			case 2:
+				phonebook.searchContacts();
+				break;
+			case 3:
+				System.out.print("\nEnter contact's Name: ");
+				scanner.nextLine();
+				String value = scanner.nextLine();
+				phonebook.deleteContact(value);
+				break;
+			case 4:
+				phonebook.scheduleEvent();
+				break;
+			case 5:
+				phonebook.printEventDetails();
+				break;
+			case 6:
+				System.out.print("\nEnter the first name:");
+				scanner.nextLine();
+				name = scanner.nextLine();
+				phonebook.printContactsByFirstName(name);
+				break;
+			case 7:
+				phonebook.printAllEvents();
+				break;
+			case 8:
+				System.out.println("\nGoodbye!");
+				scanner.close();
+				System.exit(0);
+				break;
+			default:
+				System.out.println("\n Invalid choice");
+			}
+			}catch(InputMismatchException e) {
+				scanner.nextLine();
+				System.out.println("\nPlease enter a number from the list!\n");
+				continue;
+			}
+			
+		} while (true);
 
-		myPhonebook.scheduleEvent();
-		myPhonebook.scheduleEvent();
 	
-		myPhonebook.printAllEvents();
-		
 	}
 
 }
