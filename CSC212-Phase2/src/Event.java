@@ -74,13 +74,4 @@ public class Event {
 				+ title + "\ndate and time (MM/DD/YYYY HH:MM): " + date + "\nLocation: " + location
 				+ "\nParticipants: " + participantNames + "\n-----------------------";
 	}
-
-	// @Override
-	// public String toString() {
-	// return "-----------------------\n" + "Event title: " + title + "\n" +
-	// "Contact name: " + eventUser.getName()
-	// + "\n" + "Event date and time (MM/DD/YYYY HH:MM): " + date + " " + time +
-	// "\n" + "Event location: "
-	// + location + "\n" + "-----------------------";
-	// }
 }

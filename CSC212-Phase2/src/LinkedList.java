@@ -1,6 +1,3 @@
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class LinkedList<T> {
 
 	private Node head;
@@ -127,7 +124,6 @@ public class LinkedList<T> {
 				;
 				counter++;
 			}
-
 			current = current.getNext();
 		}
 		if (counter == 0) {

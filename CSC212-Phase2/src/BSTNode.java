@@ -32,5 +32,4 @@ public class BSTNode<T> {
 	public void setRight(BSTNode<T> right) {
 		this.right = right;
 	}
-    
 }

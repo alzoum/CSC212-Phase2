@@ -50,8 +50,6 @@ public class ContactBST<T> {
 	    }
 	   
 	    public T find(String name) {
-	    	if(root.getData().getName().equalsIgnoreCase(name))
-	    		return (T)root.getData();
 	        current = root;
 	        return (T)findRec(current, name);
 	    }
@@ -153,7 +151,6 @@ public class ContactBST<T> {
 			if (searchCriteria.equalsIgnoreCase("birthday") && current.getData().getBirthday().equals(searchValue)) {
 				 resultTree.insert(current.getData());
 			}
-			
 	        
 	        searchCriteriaRec(current.getRight(), searchCriteria, searchValue, resultTree);
 	    }

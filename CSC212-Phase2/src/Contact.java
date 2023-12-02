@@ -104,5 +104,4 @@ public class Contact implements Comparable<Contact> {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-
 }

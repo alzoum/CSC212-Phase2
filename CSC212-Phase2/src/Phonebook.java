@@ -38,17 +38,21 @@ public class Phonebook {
 
 	public void searchContacts() {
 		Scanner scanner = new Scanner(System.in);
-
+		int choice = 0;
 		System.out.println("\nEnter search criteria:");
 		System.out.println("1.Name");
 		System.out.println("2.Phone Number");
 		System.out.println("3.Email Address");
 		System.out.println("4.Address");
 		System.out.println("5.Birthday");
-
+try {
 		System.out.print("\nEnter your choice:");
-		int choice = scanner.nextInt();
-
+		 choice = scanner.nextInt();
+	}catch(InputMismatchException e) {
+	scanner.nextLine();
+	System.out.println("\nPlease enter a number from the list!\n");
+	return;
+	}
 		scanner.nextLine(); // Consume the newline character
 
 		String searchValue;
@@ -84,12 +88,16 @@ public class Phonebook {
 																				// contacts by birthday
 			break;
 		default:
-			System.out.println("Invalid choice.");
+			System.out.println("\nInvalid choice.\n");
 			break;
 		}
 	}
 
 	public void printContacts(ContactBST<Contact> bst) {
+		if(bst.getRoot() == null) {
+		 System.out.println("\nNo Contacts found!\n");
+		 return;
+		}
 		printContactsInOrder(bst.getRoot());
 	}
 
@@ -103,8 +111,8 @@ public class Phonebook {
 	}
 
 	private void printContact(Contact contact) {
-		System.out.println("-----------------------\nName: " + contact.getName() + "\n Phone: " + contact.getPhoneNumber() + "\n Email: "
-				+ contact.getEmailAddress() + "\n Address: " + contact.getAddress() + "\n Birthday: "
+		System.out.println("-----------------------\nName: " + contact.getName() + "\nPhone: " + contact.getPhoneNumber() + "\nEmail: "
+				+ contact.getEmailAddress() + "\nAddress: " + contact.getAddress() + "\nBirthday: "
 				+ contact.getBirthday() + "\n-----------------------") ;
 	}
 
@@ -113,13 +121,13 @@ public class Phonebook {
 		ContactBST<Contact> list = new ContactBST<>();
 		printContactsByFirstNameRec(current, list, firstName);
 		if (list.getRoot() == null) {
-			System.out.println("No contacts found.");
+			System.out.println("\nNo contacts found.\n");
 		} else {
 			printContacts(list);
 		}
 
 	}
-
+	
 	public void printContactsByFirstNameRec(BSTNode<Contact> current, ContactBST<Contact> list, String firstName) {
 		if (current == null) {
 			return;
@@ -145,14 +153,21 @@ public class Phonebook {
 	
 	public void scheduleEvent() {
 		String title, contactName, date, location;
+		int choice = 0;
 		System.out.println("Enter type:\n" + "1. event\n" + "2. appointment");
 		System.out.print("Enter your choice: ");
-		int choice = scanner.nextInt();
-		scanner.nextLine();
+		try {
+			choice = scanner.nextInt();
+			scanner.nextLine();
+		}catch(InputMismatchException e) {
+			scanner.nextLine();
+			System.out.println("\nPlease enter a number from the list!\n");
+			return;
+		}
 		if (choice == 1) {
 			System.out.print("Enter event title: ");
 			title = scanner.nextLine();
-			System.out.print("Enter contacts name separated by a comma: ");
+			System.out.print("Enter contacts name separated by a comma(no spaces before and after the comma): ");
 			contactName = scanner.nextLine();
 			String[] names = contactName.split(",");
 			System.out.print("Enter event date and time (MM/DD/YYYY HH:MM): ");
@@ -168,14 +183,15 @@ public class Phonebook {
 			for (int i = 0; i < names.length; i++) {
 				Contact c = contactTree.find(names[i]);
 				if (c == null) {
-					System.out.println("one of the names you entered is not a contact on your phone book");
+					System.out.println("\nOne of the names you entered is not a contact on your phone book\n");
 					return;
 				}
 				event.addParticipant(c);
 			}
-			if(!(events.hasConflict(event)))
+			if(!(events.hasConflict(event))) {
 				events.insert(event);
-			else {
+				System.out.println("\nEvent scheduled successfully!\n");
+			}else {
 				System.out.println("\nThere is a conflict\n");
 			}
 		}
@@ -199,13 +215,14 @@ public class Phonebook {
 			if (c != null) {
 				Event event = new Event(true, title, date, location);
 				event.addParticipant(c);
-				if(!(events.hasConflict(event)))
+				if(!(events.hasConflict(event))) {
 					events.insert(event);
-				else {
+					System.out.println("\nAppointment scheduled successfully!\n");
+				}else {
 					System.out.println("\nThere is a conflict\n");
 				}
 			} else {
-				System.out.println("no contact found with this name");
+				System.out.println("\nNo contact found with this name\n");
 				return;
 			}
 
@@ -216,27 +233,36 @@ public class Phonebook {
 	}
 
 	public void printEventDetails() {
-		System.out.print("Enter search criteria:\n" + "1. contact name\n" + "2. Event tittle\n");
-		int x = scanner.nextInt();
+		int choice = 0;
+		System.out.print("\nEnter search criteria:\n" + "1. contact name\n" + "2. Event tittle\n");
+		System.out.print("Enter your choice: ");
+		try {
+			choice = scanner.nextInt();
+			
+		}catch(InputMismatchException e) {
+			scanner.nextLine();
+			System.out.println("\nPlease enter a number from the list!\n");
+			return;
+		}
 
-		if (x == 1) {
-			System.out.print("Enter contact name: ");
+		if (choice == 1) {
+			System.out.print("\nEnter contact name: ");
 			scanner.nextLine();
 			String name = scanner.nextLine();
 			Contact c = contactTree.find(name);
 			if (c != null) {
 				events.printEventDetails(c);
 			} else {
-				System.out.println("No contact found with this name");
+				System.out.println("\nNo contact found with this name\n");
 			}
-		} else if (x == 2) {
-			System.out.print("Enter Event title: ");
+		} else if (choice == 2) {
+			System.out.print("\nEnter Event title: ");
 			scanner.nextLine();
 			String title = scanner.nextLine();
 			events.printEventDetails(title);
 
 		} else {
-			System.out.println("No event found with this event title");
+			System.out.println("\nWrong input!\n");
 		}
 	}
 
@@ -319,7 +345,7 @@ public class Phonebook {
 				System.exit(0);
 				break;
 			default:
-				System.out.println("\n Invalid choice");
+				System.out.println("\n Invalid choice\n");
 			}
 			}catch(InputMismatchException e) {
 				scanner.nextLine();
