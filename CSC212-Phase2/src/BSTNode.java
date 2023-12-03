@@ -1,13 +1,13 @@
 
 public class BSTNode<T> {
-    private T data;
-    private BSTNode<T> left, right;
+	private T data;
+	private BSTNode<T> left, right;
 
-    public BSTNode(T data) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
-    }
+	public BSTNode(T data) {
+		this.data = data;
+		this.left = null;
+		this.right = null;
+	}
 
 	public T getData() {
 		return data;

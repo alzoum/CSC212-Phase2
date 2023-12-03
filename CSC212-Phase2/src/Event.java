@@ -69,7 +69,7 @@ public class Event {
 	@Override
 	public String toString() {
 		String participantNames = participants.getParticipantNames();
-
+		
 		return "-----------------------\n" + "Event Type: " + (appointment ? "Appointment" : "Event") + "\nTitle: "
 				+ title + "\ndate and time (MM/DD/YYYY HH:MM): " + date + "\nLocation: " + location
 				+ "\nParticipants: " + participantNames + "\n-----------------------";

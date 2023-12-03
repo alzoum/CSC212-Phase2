@@ -100,16 +100,16 @@ public class LinkedList<T> {
 		Node<Event> current = head;
 		int counter = 0;
 		while (current != null) {
-			if (current.getData().getTitle().equalsIgnoreCase(title) && !(current.getData().getAppointment())) {
+			if (current.getData().getTitle().equalsIgnoreCase(title) ) {
 				System.out.println(current.getData().toString());
-				;
+				
 				counter++;
 			}
 
 			current = current.getNext();
 		}
 		if (counter == 0) {
-			System.out.println("\nNo events found!\n");
+			System.out.println("\nNo events\\appointments found!\n");
 		}
 
 	}
@@ -121,13 +121,13 @@ public class LinkedList<T> {
 			Contact c = current.getData().getParticipants().find(contact.getName());
 			if (c != null) {
 				System.out.println(current.getData().toString());
-				;
+				
 				counter++;
 			}
 			current = current.getNext();
 		}
 		if (counter == 0) {
-			System.out.println("\nNo events found!\n");
+			System.out.println("\nNo events\\appointments found!\n");
 		}
 
 	}
@@ -136,12 +136,12 @@ public class LinkedList<T> {
 		Node<Event> current = head;
 
 		if (current == null) {
-			System.out.println("\nNo events found.\n");
+			System.out.println("\nNo events\\appointments found.\n");
 			return;
 		}
 
 		while (current != null) {
-			if (!(current.getData().getAppointment()))
+			
 				System.out.println(current.getData().toString());
 			current = current.getNext();
 		}

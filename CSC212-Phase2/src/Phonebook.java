@@ -128,7 +128,7 @@ try {
 
 	}
 	
-	public void printContactsByFirstNameRec(BSTNode<Contact> current, ContactBST<Contact> list, String firstName) {
+	private void printContactsByFirstNameRec(BSTNode<Contact> current, ContactBST<Contact> list, String firstName) {
 		if (current == null) {
 			return;
 		}
@@ -197,7 +197,7 @@ try {
 		}
 
 		else if (choice == 2) {
-			System.out.print("Enter event title: ");
+			System.out.print("Enter Appointment title: ");
 			title = scanner.nextLine();
 			System.out.print("Enter contact name: ");
 			contactName = scanner.nextLine();
