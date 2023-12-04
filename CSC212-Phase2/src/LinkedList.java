@@ -100,9 +100,9 @@ public class LinkedList<T> {
 		Node<Event> current = head;
 		int counter = 0;
 		while (current != null) {
-			if (current.getData().getTitle().equalsIgnoreCase(title) ) {
+			if (current.getData().getTitle().equalsIgnoreCase(title)) {
 				System.out.println(current.getData().toString());
-				
+
 				counter++;
 			}
 
@@ -121,7 +121,7 @@ public class LinkedList<T> {
 			Contact c = current.getData().getParticipants().find(contact.getName());
 			if (c != null) {
 				System.out.println(current.getData().toString());
-				
+
 				counter++;
 			}
 			current = current.getNext();
@@ -141,8 +141,8 @@ public class LinkedList<T> {
 		}
 
 		while (current != null) {
-			
-				System.out.println(current.getData().toString());
+
+			System.out.println(current.getData().toString());
 			current = current.getNext();
 		}
 	}
@@ -159,25 +159,24 @@ public class LinkedList<T> {
 	}
 
 	public boolean recHasConflict(BSTNode<Contact> current, Event e, Node<Event> events) {
-	
-		    if (current == null) {
-		        return false;
-		    }
 
-		    // Recursively check left subtree
-		    if (recHasConflict(current.getLeft(), e, events)) {
-		        return true;
-		    }
-
-		    // Check the current node for both conditions
-		    if (events.getData().getParticipants().find(current.getData().getName()) != null &&
-		        e.getDate().equals(events.getData().getDate())) {
-		        return true;
-		    }
-
-		    // Recursively check right subtree
-		    return recHasConflict(current.getRight(), e, events);
+		if (current == null) {
+			return false;
 		}
 
+		// Recursively check left subtree
+		if (recHasConflict(current.getLeft(), e, events)) {
+			return true;
+		}
+
+		// Check the current node for both conditions
+		if (events.getData().getParticipants().find(current.getData().getName()) != null
+				&& e.getDate().equals(events.getData().getDate())) {
+			return true;
+		}
+
+		// Recursively check right subtree
+		return recHasConflict(current.getRight(), e, events);
+	}
 
 }

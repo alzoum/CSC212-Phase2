@@ -15,20 +15,20 @@ public class ContactBST<T> {
 		return root == null;
 	}
 
-	public void insert(Contact contact) {
-		if (!contactExists(contact)) {
-			if (root == null) {
-				root = new BSTNode<>(contact);
-				current = root;
-			} else {
-				insertRec(root, contact);
-			}
-			 System.out.println("Contact Added Successfully");
-		} else {
-			System.out.println("Contact with this name or phone number already exists.");
-		}
-	}
-
+	public boolean insert(Contact contact) {
+        if (!contactExists(contact)) {
+            if (root == null) {
+                root = new BSTNode<>(contact);
+                current = root;
+            } else {
+                insertRec(root, contact);
+            }
+             return true;
+        } else {
+            System.out.println("Contact with this name or phone number already exists.");
+            return false;
+        }
+    }
 	private BSTNode<Contact> insertRec(BSTNode<Contact> current, Contact contact) {
 		if (current == null) {
 			return new BSTNode<>(contact);

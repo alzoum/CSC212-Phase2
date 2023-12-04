@@ -27,14 +27,14 @@ public class Contact implements Comparable<Contact> {
 	}
 
 	@Override
-	public int compareTo(Contact other) {
+	  public int compareTo(Contact other) {
 
-		int result = this.lastName.compareToIgnoreCase(other.getFirstName());
-		if (result == 0) {
-			result = this.firstName.compareToIgnoreCase(other.getLastName());
-		}
-		return result;
-	}
+        int result = this.lastName.compareToIgnoreCase(other.getLastName());
+        if (result == 0) {
+            result = this.firstName.compareToIgnoreCase(other.getFirstName());
+        }
+        return result;
+    }
 
 	public boolean equals(Object e) {
 		Contact contact = (Contact) e;
