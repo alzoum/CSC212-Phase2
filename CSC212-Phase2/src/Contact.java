@@ -28,12 +28,7 @@ public class Contact implements Comparable<Contact> {
 
 	@Override
 	  public int compareTo(Contact other) {
-
-        int result = this.lastName.compareToIgnoreCase(other.getLastName());
-        if (result == 0) {
-            result = this.firstName.compareToIgnoreCase(other.getFirstName());
-        }
-        return result;
+		return this.name.compareToIgnoreCase(other.getName());
     }
 
 	public boolean equals(Object e) {
