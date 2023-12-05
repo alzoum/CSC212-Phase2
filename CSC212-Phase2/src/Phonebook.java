@@ -15,7 +15,8 @@ public class Phonebook {
 	}
 
 	public void addContact(Contact contact) {
-		contactTree.insert(contact);
+		if(contactTree.insert(contact))
+			System.out.println("Contact Added Succesfully");
 	}
 
 	public void deleteContact(String name) {
